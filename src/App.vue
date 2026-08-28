@@ -35,7 +35,7 @@
     </main>
 
     <!-- Footer — CHANGE THESE TO YOUR OWN NAME AND SECTION -->
-    <AppFooter studentName="Your Name" section="Your Section" />
+    <AppFooter studentName="Santos" section="IT3A" />
   </div>
 </template>
 

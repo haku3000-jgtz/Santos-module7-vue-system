@@ -1,8 +1,8 @@
 # 📦 Inventory Management System
 
 > **Software Engineering 1 — Module 7: Design and Implementation**
-> **Student Name:** _Your Name Here_
-> **Section:** _Your Section Here_
+> **Student Name:** Santos
+> **Section:** IT3A
 
 ---
 
