@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RecordList from '../../src/components/RecordList.vue'
 import RecordForm from '../../src/components/RecordForm.vue'
@@ -46,7 +46,8 @@ describe('Feature 5: Search & Form Validation', () => {
     await searchInput.setValue('NonExistentTerm999')
 
     expect(wrapper.findAll('tbody tr').length).toBe(0)
-    expect(wrapper.text()).toContain('No products match your search.')
+    // Updated (CR-M9-01): message now reflects combined filter+search state
+    expect(wrapper.text()).toContain('No products match your current filter and search')
   })
 
   it('validates negative numbers for quantity and price in RecordForm', async () => {
