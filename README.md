@@ -1,6 +1,6 @@
 # 📦 Inventory Management System
 
-> **Software Engineering 1 — Module 7: Design and Implementation**
+> **Software Engineering 1 — Module 9: Software Evolution** _(latest)_
 > **Student Name:** Santos
 > **Section:** IT3A
 
@@ -149,9 +149,71 @@ src/
 ├── components/
 │   ├── AppHeader.vue      # Navigation bar with title and record count
 │   ├── RecordForm.vue     # Product entry and edit form with validation
-│   ├── RecordList.vue     # Searchable product table/card list
+│   ├── RecordList.vue     # Searchable, filterable product table/card list
 │   └── AppFooter.vue      # Footer with student info
 ├── App.vue                # Main application component with CRUD logic
 ├── main.js                # Vue app entry point
 └── style.css              # Tailwind CSS import
 ```
+
+---
+
+## 🔄 Module 9 — Software Evolution
+
+> **Change Request:** CR-M9-01 — Add stock status filter to the Product List
+> **Maintenance Type:** Perfective — improves usability without changing existing behavior
+> **Target Version:** `1.0.0` → `1.1.0`
+> **Branch:** `module9/software-evolution`
+
+### CR-M9-01 Summary
+
+| Field | Detail |
+|---|---|
+| **Problem** | Users had no quick one-click way to narrow products by stock status; they had to scroll or type partial words in the search bar. |
+| **Change** | Added four filter buttons — **All · In Stock · Low Stock · Out of Stock** — above the product table in `RecordList.vue`. |
+| **Acceptance Criteria** | 1. Four filter buttons visible. 2. Each status button shows only matching records. 3. "All" restores full list. 4. Filter + text search work simultaneously (AND logic). 5. Empty-state message reflects active filter. 6. Old localStorage records remain compatible. |
+
+### Impact Analysis
+
+| Area | Impact |
+|---|---|
+| Architecture | Only `RecordList.vue` changed. `App.vue`, `RecordForm.vue`, `AppHeader.vue`, `AppFooter.vue` and `localStorage` boundary **unchanged**. |
+| Design / UI | Filter button row added between search bar and product table. Empty-state message improved. |
+| Implementation | Added `statusFilter` ref, `statusOptions` array, updated `filteredRecords` computed, added `activeFilterClass()` helper. |
+| Data / localStorage | **No schema change.** `status` field already present on all records. Old records remain fully compatible. |
+| Testing | Added `tests/unit/statusFilter.spec.js` (7 new tests). Updated 1 obsolete expectation in `searchValidation.spec.js`. All 13 Module 8 regression tests retained. |
+| CI / Build | Added `npm run test:run` step to `build.yml`; CI now verifies tests AND build on every push. |
+
+### Test Results — Version 1.1.0
+
+| Metric | Result |
+|---|---|
+| Test files | 6 passed |
+| Total tests | **20 passed (20)** |
+| New tests added | 7 (`statusFilter.spec.js`) |
+| Module 8 regression tests retained | 13 |
+| `npm run build` | ✅ Built in ~2s |
+| GitHub Actions CI | ✅ Passes (test + build steps) |
+
+### Release Notes — v1.1.0
+
+```
+Version: 1.1.0
+Type: Perfective Maintenance
+CR: CR-M9-01 — Add stock status filter
+Added: Status filter buttons (All / In Stock / Low Stock / Out of Stock) in RecordList
+Preserved: CRUD, text search, form validation, delete confirmation, localStorage persistence
+Tests: 20 Vitest unit tests passed (6 files); npm run build passed; GitHub Actions CI passed
+Compatibility: All existing localStorage records remain valid (status field already present on all records)
+Regression: All 13 Module 8 test cases retained and passing
+```
+
+### Commits on `module9/software-evolution`
+
+1. `docs: add Module 9 change request and impact analysis`
+2. `feat: add stock status filter to RecordList (CR-M9-01)`
+3. `test: add statusFilter Vitest tests and update regression for CR-M9-01`
+4. `docs: update README with Module 9 release notes and version 1.1.0`
+
+---
+
