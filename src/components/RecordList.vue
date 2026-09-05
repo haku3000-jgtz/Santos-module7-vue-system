@@ -14,6 +14,19 @@
       </div>
     </div>
 
+    <!-- Status filter buttons (CR-M9-01) -->
+    <div class="flex flex-wrap gap-2 mb-5" role="group" aria-label="Filter by stock status">
+      <button
+        v-for="option in statusOptions"
+        :key="option"
+        @click="statusFilter = option"
+        class="rounded-full px-4 py-1 text-xs font-semibold border transition cursor-pointer"
+        :class="statusFilter === option ? activeFilterClass(option) : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'"
+      >
+        {{ option }}
+      </button>
+    </div>
+
     <!-- Records table (desktop) -->
     <div v-if="filteredRecords.length > 0" class="overflow-x-auto">
       <!-- Desktop table view -->
@@ -122,7 +135,9 @@
     <!-- Empty state -->
     <div v-else class="text-center py-12 text-gray-400">
       <p class="text-4xl mb-3">📭</p>
-      <p class="text-lg font-medium" v-if="searchInput.trim()">No products match your search.</p>
+      <p class="text-lg font-medium" v-if="searchInput.trim() || statusFilter !== 'All'">
+        No products match your current filter{{ searchInput.trim() ? ' and search' : '' }}.
+      </p>
       <p class="text-lg font-medium" v-else>No products yet. Add your first product above!</p>
     </div>
   </div>
@@ -142,14 +157,22 @@ defineEmits(['edit-record', 'delete-record'])
 
 const searchInput = ref('')
 
+// CR-M9-01: Status filter state — defaults to 'All' (shows everything)
+const statusFilter = ref('All')
+const statusOptions = ['All', 'In Stock', 'Low Stock', 'Out of Stock']
+
+// CR-M9-01: Combined filter — text search AND status filter applied simultaneously
 const filteredRecords = computed(() => {
   const keyword = searchInput.value.toLowerCase().trim()
-  if (!keyword) return props.records
-  return props.records.filter(
-    (record) =>
+  return props.records.filter((record) => {
+    const matchesSearch =
+      !keyword ||
       record.productName.toLowerCase().includes(keyword) ||
       record.category.toLowerCase().includes(keyword)
-  )
+    const matchesStatus =
+      statusFilter.value === 'All' || record.status === statusFilter.value
+    return matchesSearch && matchesStatus
+  })
 })
 
 const totalRecords = computed(() => props.records.length)
@@ -173,6 +196,20 @@ function statusClass(status) {
       return 'bg-red-100 text-red-800'
     default:
       return 'bg-gray-100 text-gray-800'
+  }
+}
+
+// CR-M9-01: Active filter button styling per status
+function activeFilterClass(option) {
+  switch (option) {
+    case 'In Stock':
+      return 'bg-green-100 border-green-400 text-green-800'
+    case 'Low Stock':
+      return 'bg-yellow-100 border-yellow-400 text-yellow-800'
+    case 'Out of Stock':
+      return 'bg-red-100 border-red-400 text-red-800'
+    default:
+      return 'bg-blue-600 border-blue-600 text-white'
   }
 }
 </script>
