@@ -167,9 +167,14 @@ watch(
       form.price = newVal.price
       form.status = newVal.status
       clearErrors()
+    } else {
+      // FIX: When edit is cancelled or the edited record is deleted,
+      // editData becomes null. Reset the form to prevent stale data
+      // from remaining visible when the form returns to "Add" mode.
+      resetForm()
     }
   },
-  { deep: true }
+  { deep: true, immediate: true }
 )
 
 function clearErrors() {

@@ -4,4 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+  },
 })

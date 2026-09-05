@@ -138,6 +138,12 @@ function deleteRecord(id) {
   records.value = records.value.filter((r) => r.id !== id)
   saveRecords()
   showFeedback(`🗑️ "${record.productName}" has been deleted.`, 'error')
+
+  // FIX: If the deleted record was loaded in the edit form, cancel the edit
+  // to avoid leaving the form in an invalid editing state.
+  if (editingId.value === id) {
+    cancelEdit()
+  }
 }
 
 // ── Lifecycle ────────────────────────────────────────────
